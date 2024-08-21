@@ -49,6 +49,7 @@ Follow these instructions to set up and run the project on your local machine.
    ```bash
    npm run dev
    ```
+### Postman: https://documenter.getpostman.com/view/36390504/2sAXjDdEjy
 
 ### API Endpoints
 
