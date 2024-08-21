@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Real-Time Notes App</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 800px;
+            margin: 50px auto;
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+        #user-id-input {
+            width: calc(100% - 110px);
+            padding: 10px;
+            margin-right: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+        #connect-btn {
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        #connect-btn:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+        }
+        #notifications {
+            list-style: none;
+            padding: 0;
+            margin-top: 20px;
+        }
+        #notifications li {
+            background: #e9f7e9;
+            margin-bottom: 10px;
+            padding: 10px;
+            border-left: 5px solid #3c763d;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Real-Time Notes App</h1>
+        <div>
+            <input type="text" id="user-id-input" placeholder="Enter your User ID">
+            <button id="connect-btn" disabled>Connect</button>
+        </div>
+        <ul id="notifications"></ul>
+    </div>
+
+    <script src="/socket.io/socket.io.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const userIdInput = document.getElementById('user-id-input');
+        const connectBtn = document.getElementById('connect-btn');
+        const notificationsList = document.getElementById('notifications');
+        let socket;
+
+        //enable the connect button only when there is text in the input
+        userIdInput.addEventListener('input', () => {
+            connectBtn.disabled = !userIdInput.value.trim();
+        });
+
+        //connect to websocket server when the button is clicked
+        connectBtn.addEventListener('click', () => {
+            const userId = userIdInput.value.trim();
+
+            if (userId) {
+                // Ensure the socket.io client is properly initialized
+                socket = io(); // Connect to the server using default URL (same as the page)
+
+                //register to server
+                socket.emit('register', userId);
+
+                //wait for note addition notifications
+                socket.on('noteAdded', (note) => {
+                    const newNotification = document.createElement('li');
+                    newNotification.textContent = `New note added by ${note.user}: ${note.title}`;
+                    notificationsList.appendChild(newNotification);
+                });
+
+                //disable the input and button after connecting
+                userIdInput.disabled = true;
+                connectBtn.disabled = true;
+            }
+        });
+    });
+</script></body>
+</html>
