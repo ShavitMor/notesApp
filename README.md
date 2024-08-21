@@ -33,9 +33,10 @@ Follow these instructions to set up and run the project on your local machine.
    Create a `.env` file in the root directory of the project and add your environment variables:
 
    ```env
-   MONGO_URI=mongodb://localhost:27017/notesapp //or enter you atlas link
+   MONGO_URI=mongodb://localhost:27017/notesapp / or enter your atlas link
    JWT_SECRET=your_jwt_secret
    MEANINGCLOUD_API_KEY=your_meaningcloud_api_key
+   PORT=3500
    ```
 
    - Replace `your_jwt_secret` with your chosen secret key for JWT authentication.
