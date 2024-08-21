@@ -12,14 +12,14 @@ const createNote = async (req: Request, res: Response) => {
 
     //generate the sentiment analysis
     const sentimentAnalysis = await analyzeSentiment(body);
-
     const note = new Note({
       title,
       body,
       user: userId,
       sentiment: sentimentAnalysis, 
     });
-   
+
+
     //get subscribers, search for users that have the creator in their subscriptions
     const subscribers = await User.find({ subscriptions: userId });
   
@@ -29,7 +29,16 @@ const createNote = async (req: Request, res: Response) => {
     });
 
     
+    
     await note.save();
+
+      await User.findByIdAndUpdate(
+      userId, 
+      { sentiment: sentimentAnalysis }, 
+      { new: true, runValidators: true }
+    );
+
+
     res.status(201).json(note);
 
   } catch (error) {

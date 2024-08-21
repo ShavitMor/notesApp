@@ -20,7 +20,6 @@ export const analyzeSentiment = async (text: string) => {
    
     const response = await fetch("https://api.meaningcloud.com/sentiment-2.1", requestOptions);
     const data = await response.json();
-    
     //my desired format, used it because this is the format used in the offical site
     const sentimentResults = data.sentence_list.map((sentence: any) => {
       return {
