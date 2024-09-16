@@ -5,6 +5,7 @@ import dotenv from 'dotenv';
 import connectDB from './config/db'; 
 import authRoutes from './routes/authRoutes'; 
 import notesRoutes from './routes/notesRoutes'; 
+const path = require('path');
 
 dotenv.config();
 
@@ -16,13 +17,19 @@ const app = express();
 const server = http.createServer(app);
 const io = new SocketIOServer(server);
 
-//serve static files like the client.html file
-app.use(express.static(__dirname + '/../')); 
 app.use(express.json());
 
 //routes
 app.use('/auth', authRoutes);
 app.use('/', notesRoutes);
+
+
+app.get('/', (req, res) => {
+  const clientHtmlPath = path.resolve(__dirname, '../client.html');
+  res.sendFile(clientHtmlPath);
+
+});
+  
 
 //initiate socket connection
 io.on('connection', (socket) => {
@@ -45,6 +52,7 @@ io.on('connection', (socket) => {
     console.log('A user disconnected');
   });
 });
+
 
 //start the server
 if (process.env.NODE_ENV !== 'test') {
